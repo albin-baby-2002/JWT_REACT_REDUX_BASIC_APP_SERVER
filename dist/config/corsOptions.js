@@ -1,13 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const whiteList = [
-    'http://127.0.0.1:3000',
-    'http://localhost:3500'
-];
+const allowedOrigins_1 = require("./allowedOrigins");
 const corsOptions = {
     // need to remove the origin == undefined while using in production
     origin: (origin, callback) => {
-        if (origin && whiteList.indexOf(origin) !== -1 || origin == undefined) {
+        if (origin && allowedOrigins_1.allowedOrigins.indexOf(origin) !== -1 || origin == undefined) {
             callback(null, true);
         }
         else {

@@ -4,23 +4,31 @@ const app = express();
 import * as dotenv from 'dotenv'
 dotenv.config()
 
-import cors from 'cors'
+import cors from 'cors';
 import path from "path";
 import mongoose from "mongoose";
 import { Request,Response,NextFunction } from "express";
-import cookieParser from 'cookie-parser'
+import cookieParser from 'cookie-parser';
 
-import authRouter from './routes/authRoute'
 import connectDB from "./config/dbConnection";
 import corsOptions from "./config/corsOptions";
-import registerRouter from "./routes/registerRoute";
+import verifyJWT from "./middlewares/jwtVerification";
 import errorHandler from "./middlewares/errorHandler";
+import authRouter from './routes/authRoutes/authRoute';
+import logoutRouter from "./routes/authRoutes/LogoutRoute";
+import RefreshRouter from "./routes/authRoutes/refreshRoute";
+import registerRouter from "./routes/authRoutes/registerRoute";
+import credentials from "./middlewares/credentials";
 
 const PORT = process.env.PORT || 3500;
 
 // connect to mongodb database
 
 connectDB()
+
+// access-control-allow-credentials 
+
+app.use(credentials)
 
 // cross origin resource sharing
 
@@ -38,13 +46,37 @@ app.use(express.json())
 
 app.use(express.static(path.join(__dirname,'/public')))
 
-// register route
+// register router
 
 app.use('/register',registerRouter)
 
 // auth router 
 
 app.use('/auth',authRouter)
+
+// refresh access token router 
+
+app.use('/refresh',RefreshRouter)
+
+// logout router
+
+app.use('/logout',logoutRouter)
+
+// authenticate users using jwt for private routes
+
+app.use(verifyJWT)
+
+
+app.use('/em' , (req,res,next)=>{
+  
+  console.log('req received');
+  
+    
+  return res.status(200).json({'hello':'hi'})
+}
+  
+
+)
 
 // 404 Error Middleware
 

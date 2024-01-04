@@ -1,8 +1,6 @@
+import { allowedOrigins } from "./allowedOrigins"
 
-const whiteList = [
-    'http://127.0.0.1:3000',
-    'http://localhost:3500'
-]
+
 
 const corsOptions = {
     
@@ -10,7 +8,7 @@ const corsOptions = {
     
     origin:(origin:string | undefined,callback:(error: Error | null, allowed: boolean) => void)=>{
         
-        if(origin && whiteList.indexOf(origin) !== -1 || origin == undefined){
+        if(origin && allowedOrigins.indexOf(origin) !== -1 || origin == undefined){
             
             callback(null,true)
         }
