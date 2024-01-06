@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt'
 import  User from '../models/userModel'
 
  export const newUserRegister = async(req:Request,res:Response,next:NextFunction)=>{
+    
      const { user, pwd } = req.body;
      
      // 400 -bad request

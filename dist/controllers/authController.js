@@ -68,7 +68,7 @@ const handleLogin = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             foundUser.refreshToken = refreshToken;
             const result = yield foundUser.save();
             res.cookie('jwt', refreshToken, { httpOnly: true, secure: true, sameSite: 'none', maxAge: 24 * 60 * 60 * 1000 });
-            res.status(200).json({ roles, accessToken });
+            res.status(200).json({ roles, accessToken, user: foundUser.username });
         }
         else {
             res.sendStatus(401);

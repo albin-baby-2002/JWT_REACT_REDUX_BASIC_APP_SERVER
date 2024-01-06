@@ -43,6 +43,7 @@ const LogoutRoute_1 = __importDefault(require("./routes/authRoutes/LogoutRoute")
 const refreshRoute_1 = __importDefault(require("./routes/authRoutes/refreshRoute"));
 const registerRoute_1 = __importDefault(require("./routes/authRoutes/registerRoute"));
 const credentials_1 = __importDefault(require("./middlewares/credentials"));
+const userCRUD_1 = __importDefault(require("./routes/adminRoutes/userCRUD"));
 const PORT = process.env.PORT || 3500;
 // connect to mongodb database
 (0, dbConnection_1.default)();
@@ -66,6 +67,7 @@ app.use('/refresh', refreshRoute_1.default);
 app.use('/logout', LogoutRoute_1.default);
 // authenticate users using jwt for private routes
 app.use(jwtVerification_1.default);
+app.use('/users', userCRUD_1.default);
 app.use('/em', (req, res, next) => {
     console.log('req received');
     return res.status(200).json({ 'hello': 'hi' });

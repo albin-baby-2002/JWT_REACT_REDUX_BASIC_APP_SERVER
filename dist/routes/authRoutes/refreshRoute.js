@@ -6,5 +6,5 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const refreshTokenController_1 = __importDefault(require("../../controllers/refreshTokenController"));
 const router = express_1.default.Router();
-router.post('/', refreshTokenController_1.default);
+router.get('/', refreshTokenController_1.default);
 exports.default = router;

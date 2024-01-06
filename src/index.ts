@@ -19,6 +19,7 @@ import logoutRouter from "./routes/authRoutes/LogoutRoute";
 import RefreshRouter from "./routes/authRoutes/refreshRoute";
 import registerRouter from "./routes/authRoutes/registerRoute";
 import credentials from "./middlewares/credentials";
+import Usersrouter from "./routes/adminRoutes/userCRUD";
 
 const PORT = process.env.PORT || 3500;
 
@@ -65,6 +66,8 @@ app.use('/logout',logoutRouter)
 // authenticate users using jwt for private routes
 
 app.use(verifyJWT)
+
+app.use('/users',Usersrouter)
 
 
 app.use('/em' , (req,res,next)=>{
