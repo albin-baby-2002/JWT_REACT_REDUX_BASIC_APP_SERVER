@@ -41,6 +41,7 @@ const userModel_1 = __importDefault(require("../models/userModel"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const handleRefreshToken = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const cookies = req.cookies;
+    console.log(cookies);
     if (!(cookies === null || cookies === void 0 ? void 0 : cookies.jwt))
         res.sendStatus(401); // unauthorized
     const refreshToken = cookies.jwt;

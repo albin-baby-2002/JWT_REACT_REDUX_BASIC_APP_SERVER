@@ -8,7 +8,11 @@ const corsOptions = {
     
     origin:(origin:string | undefined,callback:(error: Error | null, allowed: boolean) => void)=>{
         
+        console.log('cors reached')
+        
         if(origin && allowedOrigins.indexOf(origin) !== -1 || origin == undefined){
+            
+            console.log('cors passed')
             
             callback(null,true)
         }
@@ -16,6 +20,8 @@ const corsOptions = {
         else{
             
             callback(new Error ('Not allowed by Cors'),false)
+            
+            console.log('cors error')
         }
     },
     

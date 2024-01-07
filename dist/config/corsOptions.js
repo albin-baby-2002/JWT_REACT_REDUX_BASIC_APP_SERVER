@@ -4,11 +4,14 @@ const allowedOrigins_1 = require("./allowedOrigins");
 const corsOptions = {
     // need to remove the origin == undefined while using in production
     origin: (origin, callback) => {
+        console.log('cors reached');
         if (origin && allowedOrigins_1.allowedOrigins.indexOf(origin) !== -1 || origin == undefined) {
+            console.log('cors passed');
             callback(null, true);
         }
         else {
             callback(new Error('Not allowed by Cors'), false);
+            console.log('cors error');
         }
     },
     credentials: true, // Allow credentials (e.g., cookies)

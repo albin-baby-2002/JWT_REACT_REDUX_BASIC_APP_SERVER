@@ -61,20 +61,19 @@ app.use('/refresh',RefreshRouter)
 
 // logout router
 
+
 app.use('/logout',logoutRouter)
 
 // authenticate users using jwt for private routes
 
 app.use(verifyJWT)
 
+
 app.use('/users',Usersrouter)
 
 
 app.use('/em' , (req,res,next)=>{
   
-  console.log('req received');
-  
-    
   return res.status(200).json({'hello':'hi'})
 }
   

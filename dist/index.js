@@ -69,7 +69,6 @@ app.use('/logout', LogoutRoute_1.default);
 app.use(jwtVerification_1.default);
 app.use('/users', userCRUD_1.default);
 app.use('/em', (req, res, next) => {
-    console.log('req received');
     return res.status(200).json({ 'hello': 'hi' });
 });
 // 404 Error Middleware
