@@ -5,6 +5,6 @@ import handleLogout from '../../controllers/LogoutController'
 
 const router = express.Router()
 
-router.post('/',handleLogout)
+router.get('/',handleLogout)
 
 export default router

@@ -4,22 +4,22 @@ dotenv.config()
 
 import bcrypt from 'bcrypt'
 import User from '../models/userModel';
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 
-const handleLogin = async (req:Request, res:Response) => {
+const handleLogin = async (req:Request, res:Response,next:NextFunction) => {
     
     
     
-    const { user, pwd } = req.body;
+    const { email, pwd } = req.body;
     
-    if (!user || !pwd) return res.status(400).json({ 'message': 'Username and password are required.' });
+    if (!email || !pwd) return res.status(400).json({ 'message': 'Username and password are required.' });
     
     try{
         
-        const foundUser = await User.findOne({ username: user });
+        const foundUser = await User.findOne({ email });
         
-        if (!foundUser) return res.sendStatus(401); // 401 - Unauthorized 
+        if (!foundUser) return res.sendStatus(404); // 401 - User Not found 
         
         // evaluate password 
         const match = await bcrypt.compare(pwd, foundUser.password);
@@ -71,7 +71,7 @@ const handleLogin = async (req:Request, res:Response) => {
     }
     catch(err:any){
         
-        
+        next(err)
     }
 
    

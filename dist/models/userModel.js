@@ -13,6 +13,15 @@ const userSchema = new mongoose_1.default.Schema({
         type: String,
         required: true
     },
+    email: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    phone: {
+        type: String,
+        required: true,
+    },
     roles: {
         User: {
             type: Number,

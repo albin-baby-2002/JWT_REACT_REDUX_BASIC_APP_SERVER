@@ -40,14 +40,14 @@ dotenv.config();
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const userModel_1 = __importDefault(require("../models/userModel"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const handleLogin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { user, pwd } = req.body;
-    if (!user || !pwd)
+const handleLogin = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const { email, pwd } = req.body;
+    if (!email || !pwd)
         return res.status(400).json({ 'message': 'Username and password are required.' });
     try {
-        const foundUser = yield userModel_1.default.findOne({ username: user });
+        const foundUser = yield userModel_1.default.findOne({ email });
         if (!foundUser)
-            return res.sendStatus(401); // 401 - Unauthorized 
+            return res.sendStatus(404); // 401 - User Not found 
         // evaluate password 
         const match = yield bcrypt_1.default.compare(pwd, foundUser.password);
         if (match) {
@@ -75,6 +75,7 @@ const handleLogin = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         }
     }
     catch (err) {
+        next(err);
     }
 });
 exports.default = handleLogin;

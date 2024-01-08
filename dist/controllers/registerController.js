@@ -16,28 +16,25 @@ exports.newUserRegister = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const userModel_1 = __importDefault(require("../models/userModel"));
 const newUserRegister = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const { user, pwd } = req.body;
-    // 400 -bad request
-    if (!user || !pwd)
-        return res.status(400).json({ 'message': 'Username and password are required.' });
-    // check for duplicate usernames in the db
-    const duplicate = yield userModel_1.default.findOne({ username: user });
-    if (duplicate)
-        return res.sendStatus(409); // 409 - Conflict 
+    const { user, pwd, email, phone } = req.body;
+    if (!user || !pwd || !email || !phone)
+        return res.status(400).json({ 'message': 'All fields are required.' }); // bad request
     try {
-        //encrypt the password
+        const duplicate = yield userModel_1.default.findOne({ email });
+        if (duplicate)
+            return res.sendStatus(409); // Conflict 
         const hashedPwd = yield bcrypt_1.default.hash(pwd, 10);
-        //create and store the new user
         const newUser = new userModel_1.default({
             username: user,
-            password: hashedPwd
+            password: hashedPwd,
+            email,
+            phone
         });
         newUser.save();
-        console.log(newUser);
         res.status(201).json({ 'success': `New user ${user} created!` });
     }
     catch (err) {
-        res.status(500).json({ 'message': err.message });
+        next(err);
     }
 });
 exports.newUserRegister = newUserRegister;
