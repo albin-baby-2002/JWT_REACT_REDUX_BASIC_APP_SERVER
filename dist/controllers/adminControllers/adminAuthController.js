@@ -37,40 +37,49 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const dotenv = __importStar(require("dotenv"));
 dotenv.config();
-const userModel_1 = __importDefault(require("../models/userModel"));
+const bcrypt_1 = __importDefault(require("bcrypt"));
+const userModel_1 = __importDefault(require("../../models/userModel"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const handleRefreshToken = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const cookies = req.cookies;
-    // console.log(cookies)
-    if (!(cookies === null || cookies === void 0 ? void 0 : cookies.jwt))
-        res.sendStatus(401); // unauthorized
-    const refreshToken = cookies.jwt;
+const handleAdminLogin = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const { email, pwd } = req.body;
+    if (!email || !pwd)
+        return res.status(400).json({ 'message': 'Username and password are required.' });
     try {
-        const ACCESS_SECRET = process.env.ACCESS_TOKEN_SECRET;
-        const REFRESH_SECRET = process.env.REFRESH_TOKEN_SECRET;
-        if (!ACCESS_SECRET || !REFRESH_SECRET) {
-            throw new Error('Failed to create token');
-        }
-        const foundUser = yield userModel_1.default.findOne({ refreshToken });
+        const foundUser = yield userModel_1.default.findOne({ email });
         if (!foundUser)
-            return res.sendStatus(403); //Forbidden 
-        jsonwebtoken_1.default.verify(refreshToken, REFRESH_SECRET, (err, decoded) => {
-            if (err || foundUser.username !== decoded.username)
+            return res.sendStatus(404); // 401 - User Not found 
+        // evaluate password 
+        const match = yield bcrypt_1.default.compare(pwd, foundUser.password);
+        if (match) {
+            const roles = Object.values(foundUser.roles).filter(Boolean);
+            console.log(roles);
+            if (!roles.find((role) => role === 5150))
                 return res.sendStatus(403);
-            const roles = Object.values(foundUser.roles).filter(role => role);
-            // console.log(roles);
+            const ACCESS_SECRET = process.env.ACCESS_TOKEN_SECRET;
+            const REFRESH_SECRET = process.env.REFRESH_TOKEN_SECRET;
+            if (!ACCESS_SECRET || !REFRESH_SECRET) {
+                throw new Error('Failed to create access / refresh token');
+            }
             const accessToken = jsonwebtoken_1.default.sign({
                 "UserInfo": {
                     "id": foundUser._id,
-                    "username": decoded.username,
+                    "username": foundUser.username,
                     "roles": roles
                 }
-            }, ACCESS_SECRET, { expiresIn: '50s' });
-            res.json({ roles, accessToken, user: decoded.username });
-        });
+            }, ACCESS_SECRET, { expiresIn: '30s' });
+            const refreshToken = jsonwebtoken_1.default.sign({ "username": foundUser.username, "id": foundUser._id, }, REFRESH_SECRET, { expiresIn: '1d' });
+            // Saving refreshToken with current user
+            foundUser.refreshToken = refreshToken;
+            const result = yield foundUser.save();
+            res.cookie('jwt', refreshToken, { httpOnly: true, secure: true, sameSite: 'none', maxAge: 24 * 60 * 60 * 1000 });
+            res.status(200).json({ roles, accessToken, user: foundUser.username });
+        }
+        else {
+            res.sendStatus(401);
+        }
     }
     catch (err) {
         next(err);
     }
 });
-exports.default = handleRefreshToken;
+exports.default = handleAdminLogin;

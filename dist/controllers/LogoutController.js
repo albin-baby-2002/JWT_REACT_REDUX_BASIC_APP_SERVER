@@ -14,10 +14,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const userModel_1 = __importDefault(require("../models/userModel"));
 const handleLogout = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('logout handler');
+    //   console.log('logout handler');
     // On client, also delete the accessToken
     const cookies = req.cookies;
-    console.log(cookies);
+    // console.log(cookies)
     if (!(cookies === null || cookies === void 0 ? void 0 : cookies.jwt))
         return res.sendStatus(204); //No content
     const refreshToken = cookies.jwt;
@@ -27,11 +27,11 @@ const handleLogout = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         res.clearCookie('jwt', { httpOnly: true, sameSite: 'none', secure: true });
         return res.sendStatus(204);
     }
-    console.log('found');
+    // console.log('found')
     // Delete refreshToken in db
     foundUser.refreshToken = '';
     const result = yield foundUser.save();
-    console.log(result);
+    // console.log(result);
     res.clearCookie('jwt', { httpOnly: true, sameSite: 'none', secure: true });
     res.sendStatus(204);
 });

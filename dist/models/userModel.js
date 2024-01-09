@@ -30,6 +30,9 @@ const userSchema = new mongoose_1.default.Schema({
         Editor: Number,
         Admin: Number
     },
+    image: {
+        types: String
+    },
     refreshToken: String
 });
 const UserModel = mongoose_1.default.model('User', userSchema);

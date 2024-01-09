@@ -7,8 +7,7 @@ const corsOptions = {
     // need to remove the origin == undefined while using in production
     
     origin:(origin:string | undefined,callback:(error: Error | null, allowed: boolean) => void)=>{
-        
-        console.log('cors reached')
+     
         
         if(origin && allowedOrigins.indexOf(origin) !== -1 || origin == undefined){
             
@@ -30,3 +29,5 @@ const corsOptions = {
 }
 
 export default corsOptions
+
+//C:\Users\albin\OneDrive\Desktop\REACT-TUTORIAL\JWT_React_Redux_App\Server\public\img\profileImages\profileImg1704775680337_king-high-resolution-logo.webp

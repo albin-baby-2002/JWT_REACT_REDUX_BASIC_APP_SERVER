@@ -12,7 +12,7 @@ const handleRefreshToken =  async (req:Request, res:Response,next:NextFunction)=
     
     const cookies = req.cookies;
     
-    console.log(cookies)
+    // console.log(cookies)
     
     
     
@@ -42,12 +42,13 @@ const handleRefreshToken =  async (req:Request, res:Response,next:NextFunction)=
             
             const roles = Object.values(foundUser.roles).filter(role=>role);
             
-            console.log(roles);
+            // console.log(roles);
             
             
             const accessToken = jwt.sign(
                 {
                     "UserInfo": {
+                        "id":foundUser._id,
                         "username": decoded.username,
                         "roles": roles
                     }

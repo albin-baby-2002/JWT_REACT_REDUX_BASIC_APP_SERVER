@@ -3,11 +3,11 @@ import * as dotenv from 'dotenv'
 dotenv.config()
 
 import bcrypt from 'bcrypt'
-import User from '../models/userModel';
+import User from '../../models/userModel';
 import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 
-const handleLogin = async (req:Request, res:Response,next:NextFunction) => {
+const handleAdminLogin = async (req:Request, res:Response,next:NextFunction) => {
     
     
     
@@ -27,6 +27,11 @@ const handleLogin = async (req:Request, res:Response,next:NextFunction) => {
         if (match) {
             
             const roles = Object.values(foundUser.roles).filter(Boolean);
+            
+            console.log(roles);
+            
+            
+            if( !roles.find((role)=> role === 5150)) return res.sendStatus(403)
             
             const ACCESS_SECRET =process.env.ACCESS_TOKEN_SECRET;
             
@@ -78,4 +83,4 @@ const handleLogin = async (req:Request, res:Response,next:NextFunction) => {
    
 }
 
-export default handleLogin
+export default handleAdminLogin

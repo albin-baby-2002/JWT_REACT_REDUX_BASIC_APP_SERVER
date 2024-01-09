@@ -5,7 +5,7 @@ import * as dotenv from 'dotenv'
 dotenv.config()
 
 import cors from 'cors';
-import path from "path";
+import path from "path"; 
 import mongoose from "mongoose";
 import { Request,Response,NextFunction } from "express";
 import cookieParser from 'cookie-parser';
@@ -13,13 +13,16 @@ import cookieParser from 'cookie-parser';
 import connectDB from "./config/dbConnection";
 import corsOptions from "./config/corsOptions";
 import verifyJWT from "./middlewares/jwtVerification";
-import errorHandler from "./middlewares/errorHandler";
+import {errorHandler} from "./middlewares/errorHandler";
 import authRouter from './routes/authRoutes/authRoute';
 import logoutRouter from "./routes/authRoutes/LogoutRoute";
 import RefreshRouter from "./routes/authRoutes/refreshRoute";
 import registerRouter from "./routes/authRoutes/registerRoute";
 import credentials from "./middlewares/credentials";
-import Usersrouter from "./routes/adminRoutes/userCRUD";
+import userRouter from './routes/userRoutes/userRoutes'
+import verifyRoles from "./middlewares/verifyRoles";
+import ROLES_LIST from "./config/allowedRoles";
+import adminAuthRoute from './routes/adminRoutes/adminAuthRoute'
 
 const PORT = process.env.PORT || 3500;
 
@@ -28,57 +31,55 @@ const PORT = process.env.PORT || 3500;
 connectDB()
 
 // access-control-allow-credentials 
+app.use((req, res, next) => {
+  console.log(`Requested URL: ${req.url}`);
+  next();
+});
 
 app.use(credentials)
 
-// cross origin resource sharing
-
 app.use(cors(corsOptions))
 
-// parse cookies 
+app.use('/public', express.static(path.join(__dirname,'..', 'public')));
+
+console.log(path.join(__dirname,'..','public'))
+
+
 
 app.use(cookieParser())
 
-// parse json data from request
-
 app.use(express.json())
 
-// server static files from public folder
 
-app.use(express.static(path.join(__dirname,'/public')))
 
-// register router
 
 app.use('/register',registerRouter)
 
-// auth router 
-
 app.use('/auth',authRouter)
 
-// refresh access token router 
+app.use('/admin/auth',adminAuthRoute)
 
 app.use('/refresh',RefreshRouter)
 
-// logout router
-
-
 app.use('/logout',logoutRouter)
+
+
 
 // authenticate users using jwt for private routes
 
 app.use(verifyJWT)
 
 
-app.use('/users',Usersrouter)
+
+app.use('/admin/users',verifyRoles(ROLES_LIST.Admin))
+
+app.use('/user',verifyRoles(ROLES_LIST.User),userRouter)
 
 
-app.use('/em' , (req,res,next)=>{
-  
-  return res.status(200).json({'hello':'hi'})
-}
-  
 
-)
+
+
+
 
 // 404 Error Middleware
 

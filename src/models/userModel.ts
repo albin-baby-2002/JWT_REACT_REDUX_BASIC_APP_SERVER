@@ -14,6 +14,7 @@ interface User extends mongoose.Document {
     email:string
     phone:string
     roles: roles
+    image:string
     refreshToken:string
 }
 
@@ -43,6 +44,9 @@ const userSchema = new mongoose.Schema<User>({
         },
         Editor: Number,
         Admin: Number
+    },
+    image:{
+      types:String  
     },
     
     refreshToken: String

@@ -37,46 +37,45 @@ const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const dbConnection_1 = __importDefault(require("./config/dbConnection"));
 const corsOptions_1 = __importDefault(require("./config/corsOptions"));
 const jwtVerification_1 = __importDefault(require("./middlewares/jwtVerification"));
-const errorHandler_1 = __importDefault(require("./middlewares/errorHandler"));
+const errorHandler_1 = require("./middlewares/errorHandler");
 const authRoute_1 = __importDefault(require("./routes/authRoutes/authRoute"));
 const LogoutRoute_1 = __importDefault(require("./routes/authRoutes/LogoutRoute"));
 const refreshRoute_1 = __importDefault(require("./routes/authRoutes/refreshRoute"));
 const registerRoute_1 = __importDefault(require("./routes/authRoutes/registerRoute"));
 const credentials_1 = __importDefault(require("./middlewares/credentials"));
-const userCRUD_1 = __importDefault(require("./routes/adminRoutes/userCRUD"));
+const userRoutes_1 = __importDefault(require("./routes/userRoutes/userRoutes"));
+const verifyRoles_1 = __importDefault(require("./middlewares/verifyRoles"));
+const allowedRoles_1 = __importDefault(require("./config/allowedRoles"));
+const adminAuthRoute_1 = __importDefault(require("./routes/adminRoutes/adminAuthRoute"));
 const PORT = process.env.PORT || 3500;
 // connect to mongodb database
 (0, dbConnection_1.default)();
 // access-control-allow-credentials 
+app.use((req, res, next) => {
+    console.log(`Requested URL: ${req.url}`);
+    next();
+});
 app.use(credentials_1.default);
-// cross origin resource sharing
 app.use((0, cors_1.default)(corsOptions_1.default));
-// parse cookies 
+app.use('/public', express_1.default.static(path_1.default.join(__dirname, '..', 'public')));
+console.log(path_1.default.join(__dirname, '..', 'public'));
 app.use((0, cookie_parser_1.default)());
-// parse json data from request
 app.use(express_1.default.json());
-// server static files from public folder
-app.use(express_1.default.static(path_1.default.join(__dirname, '/public')));
-// register router
 app.use('/register', registerRoute_1.default);
-// auth router 
 app.use('/auth', authRoute_1.default);
-// refresh access token router 
+app.use('/admin/auth', adminAuthRoute_1.default);
 app.use('/refresh', refreshRoute_1.default);
-// logout router
 app.use('/logout', LogoutRoute_1.default);
 // authenticate users using jwt for private routes
 app.use(jwtVerification_1.default);
-app.use('/users', userCRUD_1.default);
-app.use('/em', (req, res, next) => {
-    return res.status(200).json({ 'hello': 'hi' });
-});
+app.use('/admin/users', (0, verifyRoles_1.default)(allowedRoles_1.default.Admin));
+app.use('/user', (0, verifyRoles_1.default)(allowedRoles_1.default.User), userRoutes_1.default);
 // 404 Error Middleware
 app.use('*', (req, res, next) => {
     res.status(404).json({ error: 'Not Found' });
 });
 // Error Handler
-app.use(errorHandler_1.default);
+app.use(errorHandler_1.errorHandler);
 // running the server application
 mongoose_1.default.connection.once('open', () => {
     console.log('Connected to MongoDB');

@@ -1,19 +1,21 @@
+import { log } from 'console';
 import * as dotenv from 'dotenv'
 import { NextFunction, Request, Response } from 'express'
 dotenv.config()
 
 import jwt, { JwtPayload } from 'jsonwebtoken'
 
-interface CustomRequest extends Request {
+export  interface CustomRequest extends Request {
   userInfo?: {
-    // Define the structure of the user object here
-    username: string
+    id:string;
+    username: string;
     roles: number []
-    // Add other properties if needed
+   
   };
 }
 
 interface UserInfo {
+  id:string;
   username: string;
   roles: number[];
 }
@@ -23,8 +25,15 @@ interface DecodedToken {
 }
 
 const verifyJWT = (req:CustomRequest,res:Response,next:NextFunction)=>{
+  
+  // console.log('JWT ENTERED');
+  
+  
+  
     
     const authHeader =( req.headers.authorization || req.headers.Authorization) as string ;
+    
+    // console.log(authHeader)
     
     if(!authHeader?.startsWith('Bearer ')) return res.sendStatus(401) // unauthorized
     
@@ -35,7 +44,7 @@ const verifyJWT = (req:CustomRequest,res:Response,next:NextFunction)=>{
             
         if(!ACCESS_SECRET ){ 
                 
-            throw new Error('Failed to create token')
+            throw new Error('Failed to verify token')
         }
     
         const token = authHeader.split(' ')[1];
@@ -44,15 +53,18 @@ const verifyJWT = (req:CustomRequest,res:Response,next:NextFunction)=>{
             
             if(err) return res.sendStatus(403); // forbidden
             
-            req.userInfo = req.userInfo || {username:'',roles:[]};
+          
             
-         
+            req.userInfo = req.userInfo || {id:'', username:'',roles:[]};
             
+            req.userInfo.id = (decoded as DecodedToken).UserInfo.id
             req.userInfo.username = (decoded as DecodedToken).UserInfo.username 
             req.userInfo.roles = (decoded as DecodedToken).UserInfo.roles;
         })
         
         next()
+        
+        // console.log('jwt passed')
     
     }
     

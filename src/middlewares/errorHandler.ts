@@ -7,9 +7,23 @@ type ErrorHandlerMiddleware = (
   next: NextFunction
 ) => void;
 
-const errorHandler:ErrorHandlerMiddleware = (err, req, res, next) => {
+export const errorHandler:ErrorHandlerMiddleware = (err, req, res, next) => {
     console.error(err.stack)
     res.status(500).send(err.message) ;
 }
 
-export default errorHandler
+export const multerErrorHandler:ErrorHandlerMiddleware = (err, req, res, next) => {
+
+  
+  console.log(err)
+
+
+    return res.status(400).json({ "success": false, "message": "Img uploading Failed : wrong img type , Insert correct Img and try Again!" })
+
+    
+
+
+
+
+
+}

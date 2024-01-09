@@ -55,15 +55,16 @@ const handleLogin = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
             const ACCESS_SECRET = process.env.ACCESS_TOKEN_SECRET;
             const REFRESH_SECRET = process.env.REFRESH_TOKEN_SECRET;
             if (!ACCESS_SECRET || !REFRESH_SECRET) {
-                throw new Error('Failed to create token');
+                throw new Error('Failed to create access / refresh token');
             }
             const accessToken = jsonwebtoken_1.default.sign({
                 "UserInfo": {
+                    "id": foundUser._id,
                     "username": foundUser.username,
                     "roles": roles
                 }
             }, ACCESS_SECRET, { expiresIn: '30s' });
-            const refreshToken = jsonwebtoken_1.default.sign({ "username": foundUser.username }, REFRESH_SECRET, { expiresIn: '1d' });
+            const refreshToken = jsonwebtoken_1.default.sign({ "username": foundUser.username, "id": foundUser._id, }, REFRESH_SECRET, { expiresIn: '1d' });
             // Saving refreshToken with current user
             foundUser.refreshToken = refreshToken;
             const result = yield foundUser.save();
