@@ -26,14 +26,16 @@ interface DecodedToken {
 
 const verifyJWT = (req:CustomRequest,res:Response,next:NextFunction)=>{
   
-  // console.log('JWT ENTERED');
+  console.log('JWT ENTERED');
   
   
   
     
     const authHeader =( req.headers.authorization || req.headers.Authorization) as string ;
     
-    // console.log(authHeader)
+    
+    
+    console.log(authHeader)
     
     if(!authHeader?.startsWith('Bearer ')) return res.sendStatus(401) // unauthorized
     
@@ -64,7 +66,7 @@ const verifyJWT = (req:CustomRequest,res:Response,next:NextFunction)=>{
         
         next()
         
-        // console.log('jwt passed')
+        console.log('jwt passed')
     
     }
     

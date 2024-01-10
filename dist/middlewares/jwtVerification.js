@@ -30,9 +30,9 @@ const dotenv = __importStar(require("dotenv"));
 dotenv.config();
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const verifyJWT = (req, res, next) => {
-    // console.log('JWT ENTERED');
+    console.log('JWT ENTERED');
     const authHeader = (req.headers.authorization || req.headers.Authorization);
-    // console.log(authHeader)
+    console.log(authHeader);
     if (!(authHeader === null || authHeader === void 0 ? void 0 : authHeader.startsWith('Bearer ')))
         return res.sendStatus(401); // unauthorized
     try {
@@ -50,7 +50,7 @@ const verifyJWT = (req, res, next) => {
             req.userInfo.roles = decoded.UserInfo.roles;
         });
         next();
-        // console.log('jwt passed')
+        console.log('jwt passed');
     }
     catch (err) {
         next(err);

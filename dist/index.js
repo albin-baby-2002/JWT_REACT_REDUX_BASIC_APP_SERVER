@@ -47,6 +47,7 @@ const userRoutes_1 = __importDefault(require("./routes/userRoutes/userRoutes"));
 const verifyRoles_1 = __importDefault(require("./middlewares/verifyRoles"));
 const allowedRoles_1 = __importDefault(require("./config/allowedRoles"));
 const adminAuthRoute_1 = __importDefault(require("./routes/adminRoutes/adminAuthRoute"));
+const userManagement_1 = __importDefault(require("./routes/adminRoutes/userManagement"));
 const PORT = process.env.PORT || 3500;
 // connect to mongodb database
 (0, dbConnection_1.default)();
@@ -68,7 +69,7 @@ app.use('/refresh', refreshRoute_1.default);
 app.use('/logout', LogoutRoute_1.default);
 // authenticate users using jwt for private routes
 app.use(jwtVerification_1.default);
-app.use('/admin/users', (0, verifyRoles_1.default)(allowedRoles_1.default.Admin));
+app.use('/admin/users', (0, verifyRoles_1.default)(allowedRoles_1.default.Admin), userManagement_1.default);
 app.use('/user', (0, verifyRoles_1.default)(allowedRoles_1.default.User), userRoutes_1.default);
 // 404 Error Middleware
 app.use('*', (req, res, next) => {

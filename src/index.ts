@@ -23,6 +23,7 @@ import userRouter from './routes/userRoutes/userRoutes'
 import verifyRoles from "./middlewares/verifyRoles";
 import ROLES_LIST from "./config/allowedRoles";
 import adminAuthRoute from './routes/adminRoutes/adminAuthRoute'
+import userManagementRoutes from './routes/adminRoutes/userManagement'
 
 const PORT = process.env.PORT || 3500;
 
@@ -71,7 +72,7 @@ app.use(verifyJWT)
 
 
 
-app.use('/admin/users',verifyRoles(ROLES_LIST.Admin))
+app.use('/admin/users',verifyRoles(ROLES_LIST.Admin),userManagementRoutes)
 
 app.use('/user',verifyRoles(ROLES_LIST.User),userRouter)
 
