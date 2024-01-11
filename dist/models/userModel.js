@@ -31,7 +31,7 @@ const userSchema = new mongoose_1.default.Schema({
         Admin: Number
     },
     image: {
-        types: String
+        type: String
     },
     refreshToken: String
 });

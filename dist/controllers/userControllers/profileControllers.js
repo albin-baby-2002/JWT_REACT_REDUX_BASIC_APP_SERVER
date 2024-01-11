@@ -19,11 +19,13 @@ const getProfileDataHandler = (req, res, next) => __awaiter(void 0, void 0, void
     try {
         const id = (_a = req === null || req === void 0 ? void 0 : req.userInfo) === null || _a === void 0 ? void 0 : _a.id;
         const user = yield userModel_1.default.findById(id);
-        // console.log(user);
+        console.log(user === null || user === void 0 ? void 0 : user.image, 'images');
+        const imageValue = (user === null || user === void 0 ? void 0 : user.image) ? user.image : 'profileStandard.png';
+        console.log(imageValue);
         if (!user) {
             return res.status(404).json({ 'message': "failed to access user data" });
         }
-        res.status(200).json({ username: user.username, email: user.email, phone: user.phone, image: user.image });
+        res.status(200).json({ username: user.username, email: user.email, phone: user.phone, image: imageValue });
     }
     catch (err) {
     }

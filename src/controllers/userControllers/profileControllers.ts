@@ -13,7 +13,11 @@ import { log } from "console";
         
         const user = await User.findById(id);
         
-        // console.log(user);
+        console.log( user?.image,'images');
+        
+        const imageValue =  user?.image ? user.image : 'profileStandard.png';
+        
+        console.log(imageValue)
         
         
         if(!user){
@@ -21,7 +25,7 @@ import { log } from "console";
             return res.status(404).json({'message':"failed to access user data"})
         }
         
-        res.status(200).json({username:user.username,email:user.email,phone:user.phone,image:user.image})
+        res.status(200).json({username:user.username,email:user.email,phone:user.phone,image:imageValue})
         
         
     }

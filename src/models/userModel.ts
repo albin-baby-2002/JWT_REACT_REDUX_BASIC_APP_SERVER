@@ -46,7 +46,7 @@ const userSchema = new mongoose.Schema<User>({
         Admin: Number
     },
     image:{
-      types:String  
+      type:String  
     },
     
     refreshToken: String
